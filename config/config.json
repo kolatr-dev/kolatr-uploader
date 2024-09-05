@@ -1,0 +1,11 @@
+{
+  "completedFolder": "C:\\kolatr-uploader\\completed",
+  "failedFolder": "C:\\kolatr-uploader\\failed",
+  "debug": false,
+  "tenants": [
+    {
+      "name": "azure-breeze",
+      "sourceFolder": ".\\samples\\azure-breeze"
+    }
+  ]
+}
