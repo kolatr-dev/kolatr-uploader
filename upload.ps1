@@ -25,19 +25,14 @@ function Copy-FilesToS3 {
         Enable-AWSMetricsLogging -Namespace "MyNamespace" -DimensionName "MyDimension"
     }
 
-    $tenantCompletedFolder = Join-Path -Path $completedFolder -ChildPath $tenantName
-    $tenantFailedFolder = Join-Path -Path $failedFolder -ChildPath $tenantName
-
     # Check S3 bucket
+    Write-Output "Testing S3 bucket $bucketName"
     try {
-        #Get-AWSCredential
-        Write-Output "Testing S3 bucket $bucketName"
+        Set-AWSCredential -ProfileName $config.awsCredentialsProfile
         Test-S3Bucket -BucketName $bucketName -ErrorAction Stop -ClientConfig $s3Config -Region "ap-southeast-2"
-        Write-Output "Bucket $bucketName exists and you have permission to access it."
     }
     catch {
-    
-        Write-Error "Bucket $bucketName does not exist or you do not have permission to access it."
+        Write-Error "Test failed: $($_.Exception.Message)"
         return
     }
 
@@ -54,6 +49,9 @@ function Copy-FilesToS3 {
     # Generate a timestamp for the run
     $timestamp = Get-Date -Format "yyyyMMddHHmmss"
 
+    $tenantCompletedFolder = Join-Path -Path $completedFolder -ChildPath "$tenantName\\$timestamp"
+    $tenantFailedFolder = Join-Path -Path $failedFolder -ChildPath "$tenantName\\$timestamp"
+
     $completedCount = 0
     $failedCount = 0
 
@@ -68,10 +66,10 @@ function Copy-FilesToS3 {
 
             # Ensure completed folder exists
             if (-not (Test-Path -Path $tenantCompletedFolder)) {
-                New-Item -ItemType Directory -Path $tenantCompletedFolder
+                New-Item -ItemType Directory -Path $tenantCompletedFolder | Out-Null
             }
             # Move file to completed folder
-            Move-Item -Path $file.FullName -Destination $tenantCompletedFolder
+            Move-Item -Path $file.FullName -Destination $tenantCompletedFolder | Out-Null
             $completedCount++
         }
         catch {
@@ -90,13 +88,16 @@ function Copy-FilesToS3 {
         }
     }
     Write-Progress -Activity "Uploading files for tenant $tenantName" -Status "Completed" -PercentComplete 100
-    Write-Output "Upload completed for tenant $tenantName"
-    Write-Output "Processed $($files.Count) files. $completedCount files uploaded successfully, $failedCount files failed."
+    Write-Output "==== Upload completed for tenant $tenantName ===="
+    Write-Output "Processed $($files.Count) files: `
+          $completedCount files uploaded successfully `
+          $failedCount files failed."
+    Write-Output "==============================================="
 }
 
 # Iterate through each tenant in the configuration
 foreach ($tenant in $config.tenants) {
-    Write-Output "Uploading files for tenant $($tenant.name)"
+    Write-Output "==== Uploading files for tenant $($tenant.name) ====" 
     Copy-FilesToS3 -tenantName $tenant.name `
                      -accessKey $tenant.accessKey `
                      -secretKey $tenant.secretKey `

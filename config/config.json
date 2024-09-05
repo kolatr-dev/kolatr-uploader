@@ -2,6 +2,7 @@
   "completedFolder": "C:\\kolatr-uploader\\completed",
   "failedFolder": "C:\\kolatr-uploader\\failed",
   "debug": false,
+  "awsCredentialsProfile": "kolatr",
   "tenants": [
     {
       "name": "azure-breeze",
