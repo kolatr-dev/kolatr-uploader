@@ -17,11 +17,11 @@ This repository contains a script to upload files from a set of folders to defin
 
 *NB: If you choose to use a different `StoreAs` name, you'll need to change the `awsCredentialsProfile` in config.json*
 
-3. For each tenant, you will need a folder of files, and configuration details in config.json:
- a. Retailer "alias" (provided by Kolatr)
- b. A source folder that has files to upload
+3. For each tenant, you will need configuration details in config.json:
+   - Retailer "alias" (provided by Kolatr)
+   - A source folder that has files to upload
 
-4. [Execution policy](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-executionpolicy?view=powershell-7.4) might need to be changed to run the script, or run it as Administrator.
+5. [Execution policy](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.security/set-executionpolicy?view=powershell-7.4) might need to be changed to run the script, or run it as Administrator.
 
 ## Usage
 
