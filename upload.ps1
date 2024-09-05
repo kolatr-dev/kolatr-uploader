@@ -99,8 +99,5 @@ function Copy-FilesToS3 {
 foreach ($tenant in $config.tenants) {
     Write-Output "==== Uploading files for tenant $($tenant.name) ====" 
     Copy-FilesToS3 -tenantName $tenant.name `
-                     -accessKey $tenant.accessKey `
-                     -secretKey $tenant.secretKey `
-                     -sourceFolder $tenant.sourceFolder `
-                     -bucketName $tenant.bucketName
+                     -sourceFolder $tenant.sourceFolder
 }
